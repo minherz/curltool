@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -34,10 +35,12 @@ func onPage(ectx echo.Context) error {
 	if err := echo.QueryParamsBinder(ectx).
 		String("url", &address).
 		BindError(); err != nil {
-		return ectx.JSON(http.StatusBadRequest, ReturnStatus{Error: fmt.Sprintf("url query parameter is missing or invalid: %s", err.Error())})
+		return ectx.JSON(http.StatusBadRequest, ReturnStatus{Error: fmt.Sprintf("url query parameter is missing: %s", err.Error())})
+	}
+	if _, err := url.ParseRequestURI(address); err != nil {
+		return ectx.JSON(http.StatusBadRequest, ReturnStatus{Error: fmt.Sprintf("Bad url value '%s': %s", address, err.Error())})
 	}
 
-	// query 'url'
 	tr := &http.Transport{
 		MaxIdleConns:       1,
 		IdleConnTimeout:    10 * time.Second,
