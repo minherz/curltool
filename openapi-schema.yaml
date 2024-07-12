@@ -1,0 +1,26 @@
+openapi: '3.0.3'
+info:
+  title: curl tool
+  version: '1.0'
+servers:
+  - url: https://api.server/
+paths:
+  /page:
+    get:
+      operationId: getPage
+      description: >
+        Get content of the page pointed by URL
+      parameters:
+        - name: url
+          in: query
+          description: Fully qualified URL of a webpage
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Malformed request
+        '500':
+          description: Reading webpage from provided URL address failed
