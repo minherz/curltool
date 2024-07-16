@@ -56,5 +56,7 @@ func onPage(ectx echo.Context) error {
 	if err != nil {
 		return ectx.JSON(http.StatusInternalServerError, ReturnStatus{Error: err.Error()})
 	}
-	return ectx.JSON(resp.StatusCode, ReturnStatus{Payload: string(bodyBytes)})
+	payload := string(bodyBytes)
+	Logger.Debug("First 4096 bytes of content", "content", payload[:4096])
+	return ectx.JSON(resp.StatusCode, ReturnStatus{Payload: payload})
 }

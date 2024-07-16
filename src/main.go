@@ -13,11 +13,12 @@ import (
 )
 
 var (
-	Logger *slog.Logger
+	Logger   *slog.Logger
+	logLevel *slog.LevelVar
 )
 
 func setupLogger() {
-	logLevel := &slog.LevelVar{}
+	logLevel = &slog.LevelVar{}
 	opts := &slog.HandlerOptions{
 		Level: logLevel,
 		ReplaceAttr: func(group []string, a slog.Attr) slog.Attr {
@@ -48,6 +49,7 @@ func main() {
 		middleware.Secure(),
 	)
 	if os.Getenv("DO_DEBUG") != "" {
+		logLevel.Set(slog.LevelDebug)
 		e.Use(middleware.Logger())
 	}
 	e.IPExtractor = echo.ExtractIPFromXFFHeader(
